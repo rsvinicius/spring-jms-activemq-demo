@@ -1,5 +1,6 @@
 package com.example.springjms.model.entity
 
+import java.math.BigDecimal
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -8,13 +9,15 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "CUSTOMER")
-data class Customer(
+@Table(name = "_order") // ORDER is a reserved keyword in SQL
+data class Order(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @Column(name = "NAME")
-    var name: String? = null
-    )
+    var customerId: Long? = null,
+
+    @Column(name = "_value") // VALUE is a reserved keyword in SQL
+    var value: BigDecimal = BigDecimal.ZERO
+)
