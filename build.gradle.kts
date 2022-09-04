@@ -16,10 +16,15 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-activemq")
     implementation("org.apache.activemq:activemq-broker")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("io.github.microutils:kotlin-logging:2.1.23")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
+    runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
