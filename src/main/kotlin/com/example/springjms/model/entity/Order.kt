@@ -12,12 +12,11 @@ import javax.persistence.Table
 @Table(name = "_order") // ORDER is a reserved keyword in SQL
 data class Order(
     @Id
-    @Column(unique = true, nullable = false)
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
     var customerId: Long? = null,
 
     @Column(name = "_value") // VALUE is a reserved keyword in SQL
-    var value: BigDecimal = BigDecimal.ZERO
+    var value: BigDecimal? = null
 )
