@@ -1,6 +1,5 @@
 //package com.example.springjms.config
 //
-//import org.springframework.beans.factory.annotation.Autowired
 //import org.springframework.context.annotation.Bean
 //import org.springframework.context.annotation.Configuration
 //import org.springframework.jms.annotation.EnableJms
@@ -11,7 +10,7 @@
 //
 //@Configuration
 //@EnableJms
-//class JmsConfigApplicationYaml(@Autowired private val connectionFactory: ConnectionFactory) {
+//class JmsConfigApplicationYaml(private val connectionFactory: ConnectionFactory) {
 //    @Bean
 //    fun jacksonJmsMessageConverter(): MappingJackson2MessageConverter {
 //        return MappingJackson2MessageConverter().apply {
