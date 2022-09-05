@@ -23,7 +23,7 @@ class OrderListener(private val orderProcessingService: OrderProcessingService) 
         messageHeaders: MessageHeaders
     ): ProcessedOrder {
         logger.info { "receiveOrder: Message received, orderState=$orderState" }
-        return orderProcessingService.processOrder(order, orderState).also {
+        return orderProcessingService.processOrderByOrderState(order, orderState).also {
             logger.info {
                 "receiveOrder: Order processed successfully, " +
                         "orderState=$orderState, orderId=${it.orderId}, processingDateTime=${it.processingDateTime}"

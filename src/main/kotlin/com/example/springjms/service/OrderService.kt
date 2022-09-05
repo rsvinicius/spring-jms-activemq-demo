@@ -14,14 +14,7 @@ class OrderService(@Autowired private val jmsTemplate: JmsTemplate) {
     lateinit var queueName: String
 
     @Transactional(transactionManager = "jmsTM")
-    fun sendOrder(order: Order, orderState: String) {
-//        val order = Order()
-
-//        val orderToSend = order.apply {
-//            id = orderRequest.orderId ?: id
-//            customerId = orderRequest.customerId ?: customerId
-//            value = orderRequest.value ?: value
-//        }
+    fun sendOrderToQueue(order: Order, orderState: String) {
         jmsTemplate.convertAndSend(queueName, order, MessagePostProcessor() { message ->
             order.id?.let { message.setLongProperty("OrderId", it) }
             message.setStringProperty("orderState", orderState)

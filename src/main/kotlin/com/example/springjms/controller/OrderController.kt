@@ -21,11 +21,11 @@ class OrderController(private val orderService: OrderService) {
     @Operation(summary = "Send order")
     fun sendOrder(@RequestBody order: Order, @RequestParam orderState: String) {
         logger.info {
-            "sendOrder: sending order OrderId=${order.id}, customerId=${order.customerId}"
+            "sendOrder: sending order from customerId=${order.customerId}"
         }
-        return orderService.sendOrder(order, orderState).also {
+        orderService.sendOrderToQueue(order, orderState).also {
             logger.info {
-                "sendOrder: order sent OrderId=${order.id}, customerId=${order.customerId}"
+                "sendOrder: order sent, customerId=${order.customerId}"
             }
         }
     }

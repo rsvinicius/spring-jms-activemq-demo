@@ -4,7 +4,6 @@ import com.example.springjms.model.entity.Order
 import com.example.springjms.model.entity.ProcessedOrder
 import com.example.springjms.repository.OrderRepository
 import com.example.springjms.repository.ProcessedOrderRepository
-import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -14,14 +13,9 @@ class OrderProcessingService(
     private val orderRepository: OrderRepository,
     private val processedOrderRepository: ProcessedOrderRepository
 ) {
-    private val logger = KotlinLogging.logger {}
 
     @Transactional(transactionManager = "jpaTM")
-    fun processOrder(order: Order, orderState: String): ProcessedOrder {
-        if (order.value < BigDecimal.ZERO) {
-            throw RuntimeException("processOrder: Invalid value for orderId=${order.id}")
-        }
-
+    fun processOrderByOrderState(order: Order, orderState: String): ProcessedOrder {
         return when (orderState) {
             "NEW" -> addOrder(order)
             "UPDATE" -> updateOrder(order)
@@ -33,47 +27,44 @@ class OrderProcessingService(
     }
 
     private fun addOrder(order: Order): ProcessedOrder {
-        logger.info { "addOrder: Adding a new order to db, orderId=${order.id}" }
+        if (isOrderValueInvalid(order)) {
+            throw RuntimeException("processOrder: Invalid value for orderId=${order.id}")
+        }
 
         val addedOrder = orderRepository.save(order)
 
-        val processedOrder = ProcessedOrder().apply {
-            this.orderId = addedOrder.id
-        }
-
-        return processedOrderRepository.save(processedOrder)
+        return processOrder(addedOrder)
     }
 
     private fun updateOrder(order: Order): ProcessedOrder {
-        logger.info { "updateOrder: Updating a order to db, orderId=${order.id}" }
-
-        val dbOrder = orderRepository.findOrderById(order.id)
-
-        val updatedOrder = dbOrder.apply {
-            this.customerId = order.customerId
-            this.value = order.value
+        val updatedOrder = orderRepository.findOrderById(order.id).apply {
+            customerId = order.customerId ?: customerId
+            value = order.value ?: value
         }
 
         val savedOrder = orderRepository.save(updatedOrder)
 
+        return processOrder(savedOrder)
+    }
+
+    private fun deleteOrder(order: Order): ProcessedOrder {
+        val dbOrder = orderRepository.findOrderById(order.id).also {
+            orderRepository.delete(it)
+        }
+
+        return processOrder(dbOrder)
+    }
+
+    private fun processOrder(order: Order): ProcessedOrder {
         val processedOrder = ProcessedOrder().apply {
-            this.orderId = savedOrder.customerId
+            orderId = order.id
         }
 
         return processedOrderRepository.save(processedOrder)
     }
 
-    private fun deleteOrder(order: Order): ProcessedOrder {
-        logger.info { "deleteOrder: Deleting a order from db, orderId=${order.id}" }
-
-        val dbOrder = orderRepository.findOrderById(order.id).also {
-            orderRepository.delete(it)
-        }
-
-        val processedOrder = ProcessedOrder().apply {
-            this.orderId = dbOrder.customerId
-        }
-
-        return processedOrderRepository.save(processedOrder)
+    private fun isOrderValueInvalid(order: Order): Boolean {
+        val orderValue = order.value ?: BigDecimal.valueOf(-1)
+        return orderValue < BigDecimal.ZERO
     }
 }
