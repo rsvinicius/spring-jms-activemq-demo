@@ -4,9 +4,7 @@ The Java Message Service (JMS) is a Java API that defines a common set of interf
 
 ## Description
 
-JMS usage sample using ActiveMQ. 
-
-There are four available connections configurations for jms available in this project:
+JMS usage sample using ActiveMQ. There are four available connections configurations for jms available in this project:
 - Application.yaml (JmsConfigApplicationYaml)
 - ActiveMQ Connection Factory (JmsConfigActiveMQ)
 - Single Connection Factory (JmsConfigSingleConnection)
